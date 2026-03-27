@@ -18,10 +18,12 @@ package org.kie.kogito.examples;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**" })
+/*@SpringBootApplication(scanBasePackages = { "org.kie.kogito.**","com.newland.anti.fraud.**" })*/
+@SpringBootApplication
 public class DemoApplication {
 
     public static void main(String[] args) {
+        System.setProperty("LOG_HOME", "D:/workspace/myWorkspace/antiFraud/log");
         SpringApplication.run(DemoApplication.class, args);
     }
 }

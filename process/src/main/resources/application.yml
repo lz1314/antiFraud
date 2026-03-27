@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: anti-process
+
+server:
+  port: 8080
+  servlet:
+    context-path: /process
+
+logging:
+  config: classpath:config/log4j.xml
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.boot.autoconfigure.web: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+
+# Kogito配置
+kogito:
+  # 禁用自动生成REST端点
+  generate:
+    rest: false
+  # 禁用规则单元自动发现
+  rule:
+    units:
+      enabled: false
