@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.newland.sri</groupId>
+        <artifactId>rule-execution-server-dependencies-starter</artifactId>
+        <version>0.0.2-SNAPSHOT</version>
+    </parent>
+
     <groupId>com.cmcc.anti.fraud</groupId>
     <artifactId>anti-fraud</artifactId>
     <version>${revision}</version>
@@ -15,18 +21,19 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <kogito.bom.version>1.44.1.Final</kogito.bom.version>
-        <version.org.kie.kogito>1.44.1.Final</version.org.kie.kogito>
-        <springboot.version>2.7.18</springboot.version>
-        <revision>1.0.0-SNAPSHOT</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <org.slf4j.version>1.7.32</org.slf4j.version>
+        <revision>1.0.0-SNAPSHOT</revision>
 
-        <!--todo 要集成nl包-->
-        <!--<version.org.kie.kogito>3.0.0-NL-SNAPSHOT</version.org.kie.kogito>
-        <kogito.bom.version>3.0.0-NL-SNAPSHOT</kogito.bom.version>-->
+        <springboot.version>3.0.0</springboot.version>
+        <spring-kafka.version>3.2.4</spring-kafka.version>
+        <slf4j.version>2.0.13</slf4j.version>
+        <yaml.version>2.0</yaml.version>
+
+        <!-- nl 包-->
+        <kogito.bom.version>3.0.0-NL-SNAPSHOT</kogito.bom.version>
+        <version.org.kie.kogito>3.0.0-NL-SNAPSHOT</version.org.kie.kogito>
 
     </properties>
 
@@ -45,7 +52,7 @@
         </repository>
     </repositories>
 
-    <!-- 推送maven仓库配置 -->
+    <!-- 推送 maven 仓库配置 -->
     <distributionManagement>
         <repository>
             <id>nlmaven</id>
@@ -74,23 +81,30 @@
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-spring-boot-bom</artifactId>
-                <!--<version>${version.org.kie.kogito}</version>-->
                 <version>${kogito.bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${org.slf4j.version}</version>
-            </dependency>
-
-            <!-- 强制锁定 snakeyaml 版本，避免 NoSuchMethodError -->
+            <!-- 强制锁定 snakeyaml 版本，Spring Boot 3.x 需要 snakeyaml 2.x -->
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>1.30</version>
+                <version>${yaml.version}</version>
+            </dependency>
+
+            <!-- spring-kafka 版本由 Spring Boot 3.0.0 BOM 统一管理 -->
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>${spring-kafka.version}</version>
+            </dependency>
+
+            <!-- slf4j-api 版本由 Spring Boot 3.0.0 BOM 统一管理 (2.0.x) -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
 
         </dependencies>
@@ -111,11 +125,51 @@
 
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- 基础 Maven 插件版本声明 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${springboot.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <fork>true</fork>
                     <source>${maven.compiler.source}</source>
@@ -128,17 +182,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
 
-            <!-- 打包成jar和war包 -->
+            <!-- 打包成 jar 和 war 包 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${springboot.version}</version>
                 <executions>
                     <execution>
                         <goals>

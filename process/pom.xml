@@ -22,21 +22,53 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-processes-spring-boot-starter</artifactId>
-            <version>${version.org.kie.kogito}</version>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-rules-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-addons-springboot-process-management</artifactId>
-            <version>${version.org.kie.kogito}</version>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
+        <!-- spring-kafka 版本由 Spring Boot 3.0.0 BOM 统一管理 -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- slf4j-api 版本由 Spring Boot 3.0.0 BOM 统一管理 (2.0.x) -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- Logback 版本由 Spring Boot 3.0.0 BOM 统一管理 -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
 
         <!-- test related        -->
@@ -97,6 +129,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- 显式声明基础插件版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
