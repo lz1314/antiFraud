@@ -1,0 +1,13 @@
+package com.newland.anti.fraud.ruleunit
+unit PersonValidationService
+
+import com.newland.anti.fraud.model.Person;
+
+rule "Is adult"
+when
+    $person: /persons[age > 18]
+then
+    modify($person) { 
+    	setAdult(true) 
+    };
+end
